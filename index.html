@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Onde cada arma nasce no servidor DayZ Xbox Brasil Veteranos, por tier, e quantas podem existir no mapa.">
+<meta name="theme-color" content="#0c0c0c">
+<meta property="og:title" content="Arsenal · Brasil Veteranos">
+<meta property="og:description" content="Onde cada arma nasce no servidor DayZ Xbox Brasil Veteranos, por tier.">
+<meta property="og:type" content="website">
+<title>Arsenal Brasil Veteranos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Outfit:wght@300;400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+  :root {
+    color-scheme: dark;
+    --fundo: #0c0c0c;
+    --superficie: #151515;
+    --superficie-2: #1c1c1c;
+    --linha: rgba(255, 255, 255, 0.09);
+    --texto: #f2f0ee;
+    --texto-2: #a9a6a3;
+    --texto-3: #6f6c69;
+    --marca: #ff3e3e;
+    --t1: #3ccf5a;
+    --t2: #e8d23a;
+    --t3: #ff9a2e;
+    --t4: #ff4d4d;
+    --t5: #b774ff;
+    --display: 'Black Ops One', 'Impact', 'Arial Narrow', sans-serif;
+    --corpo: 'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, 'Consolas', monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--fundo);
+    background-image: radial-gradient(ellipse at 15% 0%, rgba(139, 0, 0, 0.22) 0%, transparent 45%);
+    background-attachment: fixed;
+    color: var(--texto);
+    font: 400 15px/1.55 var(--corpo);
+  }
+  .pagina {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding-inline: 20px;
+    padding-block: 44px 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+
+  /* cabecalho */
+  header { display: flex; flex-direction: column; gap: 10px; }
+  .sobre {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--texto-2);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sobre::before { content: ""; width: 26px; height: 2px; background: var(--marca); }
+  h1 {
+    margin: 0;
+    font: 400 clamp(3rem, 11vw, 5.6rem)/0.95 var(--display);
+    letter-spacing: 0.02em;
+    text-wrap: balance;
+  }
+  h1 span { color: var(--marca); }
+  .lead { margin: 0; max-width: 62ch; color: var(--texto-2); font-size: 16px; }
+  .lead strong { color: var(--texto); font-weight: 600; }
+
+  /* tiers */
+  .tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+  .tier {
+    appearance: none; text-align: left; cursor: pointer;
+    background: var(--superficie); color: var(--texto);
+    border: 1px solid var(--linha); border-radius: 10px;
+    padding: 14px 14px 12px;
+    display: flex; flex-direction: column; gap: 6px;
+    font: inherit;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .tier:hover { border-color: rgba(255, 255, 255, 0.22); }
+  .tier:focus-visible, .filtro:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--marca); outline-offset: 2px; }
+  .tier[aria-pressed="true"] { border-color: var(--cor); background: var(--superficie-2); box-shadow: inset 0 3px 0 var(--cor); }
+  .tier-topo { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .selo {
+    font: 400 15px/1 var(--display); letter-spacing: 0.04em;
+    color: #111; background: var(--cor); border-radius: 4px; padding: 5px 7px 4px;
+  }
+  .tier-qtd { font: 500 13px/1 var(--mono); color: var(--texto-2); font-variant-numeric: tabular-nums; }
+  .tier-nome { font-weight: 600; font-size: 15px; }
+  .tier-area { font-size: 13px; color: var(--texto-2); line-height: 1.4; }
+
+  /* filtros */
+  .barra { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .filtro {
+    appearance: none; cursor: pointer; font: 600 13px/1 var(--corpo);
+    color: var(--texto); background: transparent; border: 1px solid var(--linha); border-radius: 999px; padding: 9px 14px;
+  }
+  .filtro[aria-pressed="true"] { background: var(--texto); color: #111; border-color: var(--texto); }
+  .campo {
+    font: 400 14px/1 var(--corpo); color: var(--texto); background: var(--superficie);
+    border: 1px solid var(--linha); border-radius: 8px; padding: 9px 12px; min-width: 0;
+  }
+  #busca { flex: 1 1 200px; }
+  #tipo { flex: 0 1 190px; }
+  .contagem { font-size: 13px; color: var(--texto-2); margin: 0; }
+
+  /* tabela */
+  .tabela { overflow-x: auto; border: 1px solid var(--linha); border-radius: 10px; background: var(--superficie); }
+  table { width: 100%; border-collapse: collapse; min-width: 720px; }
+  th, td { padding: 10px 12px; text-align: left; vertical-align: middle; }
+  thead th {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--texto-3);
+    border-bottom: 1px solid var(--linha); background: var(--superficie-2); position: sticky; top: 0;
+  }
+  tbody tr + tr td { border-top: 1px solid var(--linha); }
+  tbody tr:hover td { background: rgba(255, 255, 255, 0.025); }
+  .arma { font-weight: 600; }
+  .classe { display: block; font: 500 11px/1.3 var(--mono); color: var(--texto-3); }
+  .tipo-col { color: var(--texto-2); font-size: 13px; white-space: nowrap; }
+  th.tc, td.tc { width: 38px; padding-inline: 4px; text-align: center; }
+  th.tc { color: var(--cor); }
+  .q {
+    display: inline-block; width: 18px; height: 18px; border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+  }
+  .q.on { background: var(--cor); border-color: var(--cor); }
+  .qualquer {
+    display: block; text-align: center; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; color: var(--texto-2);
+    border: 1px dashed rgba(255, 255, 255, 0.22); border-radius: 4px; padding: 3px 6px;
+  }
+  .onde { font-size: 13px; color: var(--texto-2); }
+  .num { font: 500 14px/1 var(--mono); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+  th.num { font-family: var(--corpo); }
+  .vazio { padding: 28px 16px; text-align: center; color: var(--texto-2); }
+
+  /* listas extras */
+  .extras { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .bloco { border: 1px solid var(--linha); border-radius: 10px; padding: 18px; background: var(--superficie); display: flex; flex-direction: column; gap: 12px; }
+  .bloco h2 { margin: 0; font: 400 20px/1.1 var(--display); letter-spacing: 0.03em; }
+  .bloco p { margin: 0; color: var(--texto-2); font-size: 14px; }
+  .lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .lista li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid var(--linha); font-size: 14px; }
+  .lista li:first-child { border-top: 0; }
+  .lista .det { color: var(--texto-2); font-size: 13px; text-align: right; }
+
+  footer { color: var(--texto-3); font-size: 13px; border-top: 1px solid var(--linha); padding-top: 18px; }
+
+  /* celular: tiers em 2 colunas e cada arma vira um bloco compacto */
+  @media (max-width: 640px) {
+    .pagina { padding-block: 28px 40px; gap: 26px; }
+    .tiers { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .tier { padding: 11px 11px 10px; }
+    .tier:last-child { grid-column: span 2; }
+    .tier-area { font-size: 12px; }
+    #tipo { flex: 1 1 100%; }
+    .tabela { border: 0; background: transparent; overflow: visible; }
+    table, tbody { display: block; min-width: 0; }
+    thead { display: none; }
+    tbody tr {
+      display: grid;
+      grid-template-columns: repeat(5, 26px) 1fr auto;
+      grid-template-areas: "arma arma arma arma arma arma num" "t1 t2 t3 t4 t5 tipo tipo" "onde onde onde onde onde onde onde";
+      gap: 6px 6px; align-items: center;
+      background: var(--superficie); border: 1px solid var(--linha); border-radius: 10px;
+      padding: 12px; margin-bottom: 8px;
+    }
+    tbody tr + tr td { border-top: 0; }
+    tbody tr:hover td { background: transparent; }
+    td { padding: 0; }
+    td.c-arma { grid-area: arma; }
+    td.c-num { grid-area: num; align-self: start; }
+    td.c-num::after { content: "no mapa"; margin-left: 4px; font: 400 11px/1 var(--corpo); color: var(--texto-3); }
+    td.c-tipo { grid-area: tipo; text-align: right; }
+    td.c-onde { grid-area: onde; }
+    td.c-t1 { grid-area: t1; } td.c-t2 { grid-area: t2; } td.c-t3 { grid-area: t3; } td.c-t4 { grid-area: t4; } td.c-t5 { grid-area: t5; }
+    td.c-qualquer { grid-column: 1 / 6; grid-row: 2; }
+    td.tc { width: auto; }
+    .q { width: 26px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font: 400 11px/1 var(--display); color: var(--texto-3); }
+    .q::after { content: attr(data-n); }
+    .q.on { color: #111; }
+    .vazio { display: block; }
+  }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="pagina">
+  <header>
+    <div class="sobre">DayZ Xbox · Chernarus · Brasil Veteranos</div>
+    <h1>Arsenal<span>.</span></h1>
+    <p class="lead">Onde cada arma nasce no servidor. A coluna <strong>No mapa</strong> é quantas unidades daquela arma podem existir ao mesmo tempo no servidor inteiro. Toque num tier para ver só as armas dele.</p>
+  </header>
+
+  <section class="tiers" id="tiers" aria-label="Tiers do mapa"></section>
+
+  <section style="display:flex;flex-direction:column;gap:14px" aria-label="Lista de armas">
+    <div class="barra">
+      <button class="filtro" id="todas" type="button" aria-pressed="true">Todas as áreas</button>
+      <input class="campo" id="busca" type="search" placeholder="Buscar arma (ex.: M4, Mosin, KA)" aria-label="Buscar arma">
+      <select class="campo" id="tipo" aria-label="Tipo de arma"></select>
+    </div>
+    <p class="contagem" id="contagem" aria-live="polite"></p>
+    <div class="tabela">
+      <table>
+        <thead>
+          <tr>
+            <th>Arma</th>
+            <th>Tipo</th>
+            <th class="tc" style="--cor:var(--t1)" title="Tier 1">T1</th>
+            <th class="tc" style="--cor:var(--t2)" title="Tier 2">T2</th>
+            <th class="tc" style="--cor:var(--t3)" title="Tier 3">T3</th>
+            <th class="tc" style="--cor:var(--t4)" title="Tier 4">T4</th>
+            <th class="tc" style="--cor:var(--t5)" title="Tier 5 (Tisy)">T5</th>
+            <th>Onde nasce</th>
+            <th class="num">No mapa</th>
+          </tr>
+        </thead>
+        <tbody id="linhas"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="extras">
+    <div class="bloco">
+      <h2>Só em eventos</h2>
+      <p>Não aparecem no loot comum. Só nascem nestes eventos do mapa.</p>
+      <ul class="lista" id="evento"></ul>
+    </div>
+    <div class="bloco">
+      <h2>Não nascem</h2>
+      <p>Desligadas no servidor (limite zero). Não aparecem em lugar nenhum.</p>
+      <ul class="lista" id="zero"></ul>
+    </div>
+  </section>
+
+  <footer>Brasil Veteranos · DayZ Xbox. Dados do arquivo de loot do servidor (types.xml) em 28/09/2026.</footer>
+</div>
+
+<script>
+const DADOS = {"main":[{"n":"BK-133","c":"Mp133Shotgun","t":"Espingarda","tiers":[1],"onde":["Polícia"],"nom":50,"min":54},{"n":"BK-43 serrada","c":"SawedoffIzh43Shotgun","t":"Espingarda","tiers":[1],"onde":["Cidade","Vila","Caça"],"nom":19,"min":17},{"n":"CR-61 Skorpion","c":"CZ61","t":"Fuzil / SMG","tiers":[1],"onde":["Polícia","Heli civil"],"nom":30,"min":18},{"n":"BK-18","c":"Izh18","t":"Fuzil / SMG","tiers":[1],"onde":["Fazenda","Vila"],"nom":60,"min":50},{"n":"BK-18 serrado","c":"SawedoffIzh18","t":"Fuzil / SMG","tiers":[1],"onde":["Cidade","Vila","Caça"],"nom":10,"min":9},{"n":"Pioneer","c":"Scout","t":"Fuzil / SMG","tiers":[2],"onde":["Militar"],"nom":5,"min":4},{"n":"Pioneer (Chernarus)","c":"Scout_Chernarus","t":"Fuzil / SMG","tiers":[2],"onde":["Militar"],"nom":15,"min":14},{"n":"Pioneer (Livonia)","c":"Scout_Livonia","t":"Fuzil / SMG","tiers":[1],"onde":["Vila"],"nom":15,"min":14},{"n":"Derringer (cinza)","c":"Derringer_Grey","t":"Pistola","tiers":[1],"onde":["Polícia","Cidade"],"nom":20,"min":15},{"n":"IJ-70","c":"MakarovIJ70","t":"Pistola","tiers":[1],"onde":["Polícia","Cidade","Vila","Heli civil"],"nom":80,"min":33},{"n":"BK-43","c":"Izh43Shotgun","t":"Espingarda","tiers":[1,2],"onde":["Polícia","Vila","Cidade","Barco de pesca"],"nom":60,"min":55},{"n":"SG5-K","c":"MP5K","t":"Fuzil / SMG","tiers":[1,2],"onde":["Polícia","Militar"],"nom":20,"min":12},{"n":"Mosin 91/30","c":"Mosin9130","t":"Fuzil / SMG","tiers":[1,2],"onde":["Cidade","Vila","Caça"],"nom":40,"min":20},{"n":"RAK-37","c":"PM73Rak","t":"Fuzil / SMG","tiers":[1,2],"onde":["Polícia","Militar"],"nom":20,"min":16},{"n":"SK 59/66","c":"SKS","t":"Fuzil / SMG","tiers":[1,2],"onde":["Militar","Polícia"],"nom":24,"min":14},{"n":"Mosin serrado 91/30","c":"SawedoffMosin9130","t":"Fuzil / SMG","tiers":[1,2],"onde":["Cidade","Vila","Caça"],"nom":15,"min":11},{"n":"USG-45","c":"UMP45","t":"Fuzil / SMG","tiers":[1,2],"onde":["Polícia"],"nom":24,"min":14},{"n":"FX-45","c":"FNX45","t":"Pistola","tiers":[1,2],"onde":["Polícia","Militar"],"nom":24,"min":14},{"n":"MK II","c":"MKII","t":"Pistola","tiers":[1,2],"onde":["Cidade","Vila"],"nom":30,"min":20},{"n":"P1","c":"P1","t":"Pistola","tiers":[1,2],"onde":["Cidade","Vila","Heli civil"],"nom":50,"min":46},{"n":"Besta (madeira)","c":"Crossbow_Wood","t":"Besta","tiers":[1,2,3],"onde":["Caça","Fazenda"],"nom":7,"min":6},{"n":"R12","c":"R12","t":"Espingarda","tiers":[2,3,4],"onde":["Polícia","Militar"],"nom":25,"min":24},{"n":"Blaze","c":"B95","t":"Fuzil / SMG","tiers":[1,2,3],"onde":["Caça"],"nom":17,"min":7},{"n":"CR-550 Savanna","c":"CZ550","t":"Fuzil / SMG","tiers":[3,4],"onde":["Polícia","Caça"],"nom":21,"min":20},{"n":"SSG 82","c":"SSG82","t":"Fuzil / SMG","tiers":[2,3,4],"onde":["Polícia","Caça","Fazenda"],"nom":21,"min":20},{"n":"CR-75","c":"CZ75","t":"Pistola","tiers":[1,2,3,4],"onde":["Polícia","Vila"],"nom":42,"min":28},{"n":"Mosin 91/30 (preta)","c":"Mosin9130_Black","t":"Fuzil / SMG","tiers":[1,3],"onde":["Cidade","Vila","Caça"],"nom":14,"min":14},{"n":"M70 Tundra","c":"Winchester70","t":"Fuzil / SMG","tiers":[1,3,4],"onde":["Caça","Vila"],"nom":38,"min":24},{"n":"KA-74 (preta)","c":"AK74_Black","t":"Fuzil / SMG","tiers":[3],"onde":["Militar"],"nom":28,"min":17},{"n":"Besta (outono)","c":"Crossbow_Autumn","t":"Besta","tiers":[2,3],"onde":["Caça"],"nom":5,"min":3},{"n":"Besta (preta)","c":"Crossbow_Black","t":"Besta","tiers":[2,3],"onde":["Fazenda"],"nom":5,"min":3},{"n":"BK-12","c":"Izh18Shotgun","t":"Espingarda","tiers":[2,3],"onde":["Cidade","Vila"],"nom":55,"min":50},{"n":"CR-527","c":"CZ527","t":"Fuzil / SMG","tiers":[2,3],"onde":["Fazenda","Vila","Caça"],"nom":35,"min":21},{"n":"Bizon","c":"PP19","t":"Fuzil / SMG","tiers":[1],"onde":["Militar","Heli civil"],"nom":10,"min":8},{"n":"Mosin serrado 91/30 (preta)","c":"SawedoffMosin9130_Black","t":"Fuzil / SMG","tiers":[2,3],"onde":["Cidade","Vila","Caça"],"nom":4,"min":3},{"n":"Longhorn","c":"Longhorn","t":"Pistola","tiers":[2,3],"onde":["Caça"],"nom":15,"min":10},{"n":"KA-74","c":"AK74","t":"Fuzil / SMG","tiers":[1],"onde":["Militar"],"nom":12,"min":7},{"n":"KA-74 (verde)","c":"AK74_Green","t":"Fuzil / SMG","tiers":[2,3,4],"onde":["Militar"],"nom":11,"min":7},{"n":"DMR","c":"M14","t":"Fuzil / SMG","tiers":[5],"onde":["Militar"],"nom":2,"min":1},{"n":"M16-A2","c":"M16A2","t":"Fuzil / SMG","tiers":[5],"onde":["Militar"],"nom":3,"min":1},{"n":"Carabina de repetição","c":"Repeater","t":"Fuzil / SMG","tiers":[1,2,3,4],"onde":["Polícia","Fazenda","Vila"],"nom":35,"min":28},{"n":"Vaiga","c":"Saiga","t":"Espingarda","tiers":[5],"onde":["Militar","Heli civil"],"nom":3,"min":1},{"n":"KA-M","c":"AKM","t":"Fuzil / SMG","tiers":[5],"onde":["Militar"],"nom":3,"min":1},{"n":"M4-A1","c":"M4A1","t":"Fuzil / SMG","tiers":[5],"onde":["Militar"],"nom":2,"min":1},{"n":"M4-A1 (preta)","c":"M4A1_Black","t":"Fuzil / SMG","tiers":[5],"onde":["Militar"],"nom":2,"min":1},{"n":"M4-A1 (verde)","c":"M4A1_Green","t":"Fuzil / SMG","tiers":[5],"onde":["Militar"],"nom":2,"min":1},{"n":"Mosin 91/30 (camuflada)","c":"Mosin9130_Camo","t":"Fuzil / SMG","tiers":[3,4],"onde":["Cidade","Vila","Caça","Militar"],"nom":28,"min":7},{"n":"VS-89","c":"SV98","t":"Fuzil / SMG","tiers":[5],"onde":["Militar"],"nom":2,"min":1},{"n":"Mosin serrado 91/30 (camuflada)","c":"SawedoffMosin9130_Camo","t":"Fuzil / SMG","tiers":[3,4],"onde":["Cidade","Vila","Caça"],"nom":5,"min":4},{"n":"Mosin serrado 91/30 (verde)","c":"SawedoffMosin9130_Green","t":"Fuzil / SMG","tiers":[3,4],"onde":["Cidade","Vila","Caça"],"nom":5,"min":4},{"n":"Vikhr","c":"Vikhr","t":"Fuzil / SMG","tiers":[3,4],"onde":["Militar"],"nom":10,"min":6},{"n":"M79","c":"M79","t":"Lançador","tiers":[5],"onde":["Militar"],"nom":3,"min":1},{"n":"KA-101","c":"AK101","t":"Fuzil / SMG","tiers":[5],"onde":["Militar"],"nom":4,"min":2},{"n":"KA-101 (preta)","c":"AK101_Black","t":"Fuzil / SMG","tiers":[5],"onde":["Militar"],"nom":2,"min":1},{"n":"KA-101 (verde)","c":"AK101_Green","t":"Fuzil / SMG","tiers":[5],"onde":["Militar"],"nom":1,"min":1},{"n":"AUR AX","c":"Aug","t":"Fuzil / SMG","tiers":[5],"onde":["Militar"],"nom":2,"min":1},{"n":"AUR A1","c":"AugShort","t":"Fuzil / SMG","tiers":[5],"onde":["Militar"],"nom":2,"min":1},{"n":"LE-MAS","c":"FAMAS","t":"Fuzil / SMG","tiers":[5],"onde":["Militar"],"nom":2,"min":1},{"n":"VSD (madeira)","c":"SVD_Wooden","t":"Fuzil / SMG","tiers":[5],"onde":["Militar"],"nom":2,"min":1},{"n":"Besta (verão)","c":"Crossbow_Summer","t":"Besta","tiers":[],"onde":["Fazenda"],"nom":5,"min":3},{"n":"KAS-74U","c":"AKS74U","t":"Fuzil / SMG","tiers":[2],"onde":["Polícia"],"nom":6,"min":4},{"n":"KAS-74U (preta)","c":"AKS74U_Black","t":"Fuzil / SMG","tiers":[2],"onde":["Polícia"],"nom":4,"min":2},{"n":"KAS-74U (verde)","c":"AKS74U_Green","t":"Fuzil / SMG","tiers":[4],"onde":["Militar"],"nom":8,"min":5},{"n":"SCR 17","c":"SCARH","t":"Fuzil / SMG","tiers":[4],"onde":["Militar"],"nom":3,"min":1},{"n":"SCR 17 (preta)","c":"SCARH_Black","t":"Fuzil / SMG","tiers":[4],"onde":["Militar"],"nom":2,"min":1},{"n":"Kolt 1911","c":"Colt1911","t":"Pistola","tiers":[],"onde":["Polícia","Cidade","Vila","Heli civil"],"nom":60,"min":20},{"n":"Deagle","c":"Deagle","t":"Pistola","tiers":[],"onde":["Cidade"],"nom":35,"min":15},{"n":"Kolt entalhada 1911","c":"Engraved1911","t":"Pistola","tiers":[1,2,3,4],"onde":["Militar","Cidade","Vila","Heli civil"],"nom":20,"min":12},{"n":"Pistola sinalizadora","c":"Flaregun","t":"Pistola","tiers":[1,2,3,4],"onde":["Militar","Polícia","Médico","Bombeiro","Fazenda"],"nom":28,"min":17},{"n":"Mlock-91","c":"Glock19","t":"Pistola","tiers":[],"onde":["Polícia"],"nom":40,"min":20},{"n":"Revólver","c":"Magnum","t":"Pistola","tiers":[],"onde":["Cidade"],"nom":45,"min":20},{"n":"Deagle dourada","c":"Deagle_Gold","t":"Pistola","tiers":[],"onde":["Cidade"],"nom":15,"min":5}],"evento":[{"n":"Mosin 91/30 (verde)","c":"Mosin9130_Green","t":"Fuzil / SMG","tiers":[1,3],"onde":["Barco de pesca"],"nom":20,"min":1,"ev":"Barco de pesca"},{"n":"VSS","c":"VSS","t":"Fuzil / SMG","tiers":[3,4],"onde":["Militar"],"nom":7,"min":4,"ev":"Queda de helicóptero e comboio militar"},{"n":"VSD","c":"SVD","t":"Fuzil / SMG","tiers":[4],"onde":["Militar"],"nom":13,"min":8,"ev":"Queda de helicóptero e comboio militar"},{"n":"SVAL","c":"ASVAL","t":"Fuzil / SMG","tiers":[],"onde":["Militar"],"nom":13,"min":8,"ev":"Queda de helicóptero e comboio militar"},{"n":"LAR","c":"FAL","t":"Fuzil / SMG","tiers":[],"onde":["Militar"],"nom":25,"min":26,"ev":"Queda de helicóptero e comboio militar"}],"zero":[{"n":"Sporter 22","c":"Ruger1022","t":"Fuzil / SMG","tiers":[1],"onde":["Cidade","Vila"],"nom":0,"min":0},{"n":"Derringer (preta)","c":"Derringer_Black","t":"Pistola","tiers":[1,2],"onde":[],"nom":0,"min":0},{"n":"Derringer (rosa)","c":"Derringer_Pink","t":"Pistola","tiers":[1,2],"onde":[],"nom":0,"min":0},{"n":"BK-12 serrada","c":"SawedoffIzh18Shotgun","t":"Espingarda","tiers":[],"onde":[],"nom":0,"min":0},{"n":"Blaze serrado","c":"SawedoffB95","t":"Fuzil / SMG","tiers":[],"onde":[],"nom":0,"min":0},{"n":"LE-MAS serrada","c":"SawedoffFAMAS","t":"Fuzil / SMG","tiers":[],"onde":[],"nom":0,"min":0},{"n":"Revólver serrado","c":"SawedoffMagnum","t":"Pistola","tiers":[],"onde":[],"nom":0,"min":0}]};
+const TIERS = [
+  { n: 1, cor: 'var(--t1)', area: 'Litoral sul e leste' },
+  { n: 2, cor: 'var(--t2)', area: 'Interior perto do litoral' },
+  { n: 3, cor: 'var(--t3)', area: 'Centro-oeste e norte, quase todo o aeroporto NW' },
+  { n: 4, cor: 'var(--t4)', area: 'Pontos militares do noroeste' },
+  { n: 5, cor: 'var(--t5)', area: 'Tisy, loot exclusivo do servidor' }
+];
+const estado = { tier: 0, tipo: '', busca: '' };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+const ordenadas = DADOS.main.slice().sort((a, b) => {
+  const pa = a.tiers.length ? Math.min(...a.tiers) : 9, pb = b.tiers.length ? Math.min(...b.tiers) : 9;
+  if (pa !== pb) return pa - pb;
+  const ua = a.tiers.length ? Math.max(...a.tiers) : 9, ub = b.tiers.length ? Math.max(...b.tiers) : 9;
+  if (ua !== ub) return ua - ub;
+  return b.nom - a.nom || a.n.localeCompare(b.n, 'pt');
+});
+
+const caixaTiers = document.getElementById('tiers');
+caixaTiers.innerHTML = TIERS.map(t => {
+  const qtd = DADOS.main.filter(a => a.tiers.includes(t.n)).length;
+  return `<button class="tier" type="button" data-tier="${t.n}" aria-pressed="false" style="--cor:${t.cor}">
+    <span class="tier-topo"><span class="selo">T${t.n}</span><span class="tier-qtd">${qtd} armas</span></span>
+    <span class="tier-nome">Tier ${t.n}</span>
+    <span class="tier-area">${esc(t.area)}</span>
+  </button>`;
+}).join('');
+
+const tipos = [...new Set(DADOS.main.map(a => a.t))].sort((a, b) => a.localeCompare(b, 'pt'));
+const selTipo = document.getElementById('tipo');
+selTipo.innerHTML = '<option value="">Todos os tipos</option>' + tipos.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('');
+
+function linha(a) {
+  const tierCels = a.tiers.length
+    ? TIERS.map(t => `<td class="tc c-t${t.n}" style="--cor:${t.cor}"><span class="q${a.tiers.includes(t.n) ? ' on' : ''}" data-n="T${t.n}" role="img" aria-label="${a.tiers.includes(t.n) ? 'Nasce' : 'Não nasce'} no Tier ${t.n}"></span></td>`).join('')
+    : `<td class="tc c-qualquer" colspan="5"><span class="qualquer" title="Sem tier: nasce em qualquer área onde exista o tipo de lugar dela">qualquer tier</span></td>`;
+  return `<tr>
+    <td class="c-arma"><span class="arma">${esc(a.n)}</span><span class="classe">${esc(a.c)}</span></td>
+    <td class="tipo-col c-tipo">${esc(a.t)}</td>
+    ${tierCels}
+    <td class="onde c-onde">${esc(a.onde.join(', '))}</td>
+    <td class="num c-num">${a.nom}</td>
+  </tr>`;
+}
+
+function desenhar() {
+  const q = estado.busca.trim().toLowerCase();
+  const vis = ordenadas.filter(a =>
+    (!estado.tier || !a.tiers.length || a.tiers.includes(estado.tier)) &&
+    (!estado.tipo || a.t === estado.tipo) &&
+    (!q || a.n.toLowerCase().includes(q) || a.c.toLowerCase().includes(q))
+  );
+  document.getElementById('linhas').innerHTML = vis.length
+    ? vis.map(linha).join('')
+    : '<tr><td class="vazio" colspan="9">Nenhuma arma com esse filtro.</td></tr>';
+  const area = estado.tier ? `no Tier ${estado.tier}` : 'em todas as áreas';
+  const semTier = vis.filter(a => !a.tiers.length).length;
+  document.getElementById('contagem').textContent =
+    `${vis.length} ${vis.length === 1 ? 'arma' : 'armas'} ${area}` + (estado.tier && semTier ? `, incluindo ${semTier} que nascem em qualquer tier` : '') + '.';
+  document.querySelectorAll('.tier').forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.tier) === estado.tier)));
+  document.getElementById('todas').setAttribute('aria-pressed', String(estado.tier === 0));
+}
+
+caixaTiers.addEventListener('click', e => {
+  const b = e.target.closest('.tier'); if (!b) return;
+  const n = Number(b.dataset.tier);
+  estado.tier = estado.tier === n ? 0 : n; desenhar();
+});
+document.getElementById('todas').addEventListener('click', () => { estado.tier = 0; desenhar(); });
+document.getElementById('busca').addEventListener('input', e => { estado.busca = e.target.value; desenhar(); });
+selTipo.addEventListener('change', e => { estado.tipo = e.target.value; desenhar(); });
+
+document.getElementById('evento').innerHTML = DADOS.evento.slice().sort((a, b) => b.nom - a.nom)
+  .map(a => `<li><span><span class="arma">${esc(a.n)}</span> <span class="classe" style="display:inline">${esc(a.t)}</span></span><span class="det">${esc(a.ev)} · ${a.nom} no mapa</span></li>`).join('');
+document.getElementById('zero').innerHTML = DADOS.zero.slice().sort((a, b) => a.n.localeCompare(b.n, 'pt'))
+  .map(a => `<li><span class="arma">${esc(a.n)}</span><span class="det">${esc(a.t)}</span></li>`).join('');
+
+desenhar();
+</script>
+
+</body>
+</html>
